@@ -19,8 +19,6 @@ public class DruidConfig {
                 new StatViewServlet(), "/druid/*"); // 现在要进行druid监控的配置处理操作
         servletRegistrationBean.addInitParameter("allow",
                 "127.0.0.1"); // 白名单
-        servletRegistrationBean.addInitParameter("test",
-                "10.120.142.194."); // 白名单
 //        servletRegistrationBean.addInitParameter("deny", "192.168.28.200"); // 黑名单
         servletRegistrationBean.addInitParameter("loginUsername", "root"); // 用户名
         servletRegistrationBean.addInitParameter("loginPassword", "root"); // 密码

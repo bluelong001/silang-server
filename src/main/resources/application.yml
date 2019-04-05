@@ -1,6 +1,6 @@
 
 
-project-path: "D:\\silang\\"
+project-path: D:\\silang\\
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
