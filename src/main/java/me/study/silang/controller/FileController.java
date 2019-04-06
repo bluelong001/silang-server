@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,31 +40,20 @@ public class FileController {
     private IFileService fileService;
 
     @PostMapping("/upload")
-    public Rest upload(@RequestParam Param param, @RequestParam(value = "file") List<MultipartFile> files, HttpServletRequest request) {
-        String type = null != param.get("type") ? (String) param.get("type") : "cache";
+    public Rest upload(@RequestParam Map<String,String> param, @RequestParam(value = "file") List<MultipartFile> files) {
+        String type = null != param.get("type") ? param.get("type") : "cache";
         String savePath = projectPath + File.separator + type;
         for (MultipartFile f : files) {
-            String fileName = UUID.randomUUID().toString().replaceAll("-", "");
+            String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"."+type;
             File file = new File(savePath, fileName);
             if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdir();
+                file.getParentFile().mkdirs();
             }
-            while (file.exists()) file = new File(savePath, UUID.randomUUID().toString().replaceAll("-", ""));
             try {
-                boolean flag = file.createNewFile();
-                if (!flag) throw new IOException("create fail");
-
+                Files.copy(f.getInputStream(), file.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
                 return Rest.fail();
-            }
-            try {
-                f.transferTo(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return Rest.fail();
-            } finally {
-                file.delete();
             }
             me.study.silang.entity.File fileBean = me.study.silang.entity.File.builder().fileName(fileName).type(type).build();
             fileService.save(fileBean);
