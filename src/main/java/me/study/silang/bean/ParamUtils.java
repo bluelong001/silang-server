@@ -1,72 +1,34 @@
 package me.study.silang.bean;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.BeanUtils;
-import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
-import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.cglib.beans.BeanMap;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Param extends HashMap<String, Object> {
-    public static Param build() {
-        return new Param();
+public class ParamUtils  {
+    LinkedHashMap<String ,Object>map;
+    public ParamUtils(Map map){
+        this.map= (LinkedHashMap<String, Object>) map;
     }
 
-    public Param page(long page) {
-        put("page", page);
-        return this;
-    }
-
-    public Param pageSize(long pageSize) {
-        put("pageSize", pageSize);
-        return this;
-    }
-
-    public Param obj(Object obj) throws Exception {
-        if (obj == null) {
-            return null;
-        }
-        BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
-        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-        for (PropertyDescriptor property : propertyDescriptors) {
-            String key = property.getName();
-            // 过滤class属性
-            if (!key.equals("class")) {
-                // 得到property对应的getter方法
-                Method getter = property.getReadMethod();
-                Object value = getter.invoke(obj);
-                if (null != value) {
-                    put(camelToUnderline(key), value);
-                }
-            }
-        }
-        return this;
-    }
 
 
     public IPage toPage() {
         Page page = new Page();
 
-        if (null != get("page"))
-            page.setPages((long) get("page"));
-        if (null != get("pageSize"))
-            page.setSize((long) get("pageSize"));
+        if (null != map.get("page"))
+            page.setPages(Long.parseLong((String) map.get("page")));
+        if (null != map.get("pageSize"))
+            page.setSize(Long.parseLong((String) map.get("pageSize")));
         return page;
     }
 
@@ -79,9 +41,9 @@ public class Param extends HashMap<String, Object> {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        if (this.size() > 0) {
-            for (Map.Entry<String, Object> entry : this.entrySet()) {
-                String propertyName = underlineToCamel(entry.getKey());
+        if (map.size() > 0) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String propertyName = entry.getKey();
                 Object value = entry.getValue();
                 String setMethodName = "set"
                         + propertyName.substring(0, 1).toUpperCase()
@@ -106,13 +68,13 @@ public class Param extends HashMap<String, Object> {
     public QueryWrapper toQueryWrapper() {
         QueryWrapper queryWrapper = new QueryWrapper();
 
-        if (null != get("page"))
-            remove("page");
-        if (null != get("pageSize"))
-            remove("pageSize");
-        for (String key : this.keySet()) {
-            if (null != this.get(key)) {
-                Object value = this.get(key);
+        if (null != map.get("page"))
+            map.remove("page");
+        if (null != map.get("pageSize"))
+            map.remove("pageSize");
+        for (String key : map.keySet()) {
+            if (null != map.get(key)) {
+                Object value = map.get(key);
                 queryWrapper.eq(key, value);
             }
         }

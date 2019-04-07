@@ -67,5 +67,7 @@ spring:
     useGlobalDataSourceStat: true
 
 
-#logging:
-#  level:
+
+logging:
+  level:
+    me.study.silang.mapper: debug

@@ -1,6 +1,5 @@
 package me.study.silang.controller;
 
-import me.study.silang.bean.Param;
 import me.study.silang.bean.Rest;
 import me.study.silang.service.IFileService;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,6 +43,7 @@ public class FileController {
     public Rest upload(@RequestParam Map<String,String> param, @RequestParam(value = "file") List<MultipartFile> files) {
         String type = null != param.get("type") ? param.get("type") : "cache";
         String savePath = projectPath + File.separator + type;
+        List<String> ids=new ArrayList<>();
         for (MultipartFile f : files) {
             String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"."+type;
             File file = new File(savePath, fileName);
@@ -57,8 +58,9 @@ public class FileController {
             }
             me.study.silang.entity.File fileBean = me.study.silang.entity.File.builder().fileName(fileName).type(type).build();
             fileService.save(fileBean);
+            ids.add(fileBean.getId().toString());
         }
-        return Rest.ok();
+        return Rest.ok().data(String.join(";",ids));
     }
 
     @GetMapping("/down")

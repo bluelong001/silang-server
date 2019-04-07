@@ -2,13 +2,14 @@ package me.study.silang.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import me.study.silang.bean.Param;
+import me.study.silang.bean.ParamUtils;
 import me.study.silang.bean.Rest;
 import me.study.silang.entity.User;
 import me.study.silang.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * <p>
@@ -22,29 +23,32 @@ import javax.annotation.Resource;
 @RequestMapping("/api/user")
 public class UserController {
     @Resource
-    private IUserService postService;
+    private IUserService userService;
 
     @GetMapping
-    public Rest list(@RequestParam Param param){
-        IPage page = postService.page(param.toPage(), param.toQueryWrapper());
+    public Rest list(@RequestParam Map map){
+        ParamUtils param = new ParamUtils(map);
+        IPage page = userService.page(param.toPage(), param.toQueryWrapper());
         return Rest.ok().data(page.getRecords()).total(page.getTotal());
     }
 
     @PostMapping
-    public Rest add(@RequestParam Param param){
-        postService.save((User)param.toObj(User.class));
+    public Rest add(@RequestParam Map map){
+        ParamUtils param = new ParamUtils(map);
+        userService.save((User)param.toObj(User.class));
         return Rest.ok();
     }
 
     @PutMapping
-    public Rest update(@RequestParam Param param){
-        postService.saveOrUpdate(param.toObj(User.class));
+    public Rest update(@RequestParam Map map){
+        ParamUtils param = new ParamUtils(map);
+        userService.saveOrUpdate(param.toObj(User.class));
         return Rest.ok();
     }
 
     @DeleteMapping
     public Rest del(Integer id){
-        postService.removeById(id);
+        userService.removeById(id);
         return Rest.ok();
     }
 }
