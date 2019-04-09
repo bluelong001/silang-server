@@ -26,7 +26,7 @@ public class ParamUtils  {
         Page page = new Page();
 
         if (null != map.get("page"))
-            page.setPages(Long.parseLong((String) map.get("page")));
+            page.setCurrent(Long.parseLong((String) map.get("page")));
         if (null != map.get("pageSize"))
             page.setSize(Long.parseLong((String) map.get("pageSize")));
         return page;
@@ -56,7 +56,7 @@ public class ParamUtils  {
                 try {
                     clazz.getMethod(setMethodName, field.getType()).invoke(obj, value);
                 } catch (Exception e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
             }
         }

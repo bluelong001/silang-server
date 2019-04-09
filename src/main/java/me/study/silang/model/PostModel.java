@@ -33,8 +33,8 @@ public class PostModel implements Serializable {
     private String gmtCreate="2018-01-01 00:00:00";
     @Builder.Default
     private String gmtUpdate="2018-01-01 00:00:00";
-    @Builder.Default
-    private String userName="username";
+
+    private UserInfo userInfo;
     @Builder.Default
     private Integer replyNum=0;
 }

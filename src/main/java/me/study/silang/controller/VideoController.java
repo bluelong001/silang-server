@@ -47,7 +47,7 @@ public class VideoController {
                     .content(video.getContent())
                     .title(video.getTitle())
                     .fileUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath() + fileService.getById(video.getFileId()).getFileName())
-                    .userName(userService.getById(video.getUserId()).getUsername())
+                    .userInfo(userService.getUserInfo(video.getUserId(),request))
                     .gmtCreate(video.getGmtCreate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                     .gmtUpdate(video.getGmtUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                     .id(video.getId())
@@ -59,7 +59,7 @@ public class VideoController {
     @PostMapping
     public Rest add(@RequestParam Map map, HttpServletRequest request) {
         Video video = (Video) new ParamUtils(map).toObj(Video.class);
-        video.setUserId(TokenUtils.getUserInfo(request).getId());
+        video.setUserId(TokenUtils.getUserInfo(request));
         videoService.save(video);
         return Rest.ok();
     }

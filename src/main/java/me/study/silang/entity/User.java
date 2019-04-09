@@ -34,7 +34,7 @@ public class User implements Serializable {
 
     private String displayname;
 
-    private String headIcon;
+    private Integer fileId;
 
     private Integer role;
 

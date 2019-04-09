@@ -14,6 +14,7 @@ import me.study.silang.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class PostController {
     private IUserService userService;
 
     @GetMapping
-    public Rest list(@RequestParam Map map) {
+    public Rest list(@RequestParam Map map, HttpServletRequest request) {
         ParamUtils param = new ParamUtils(map);
         IPage page = postService.page(param.toPage(), param.toQueryWrapper());
         List<PostModel> modelList = new ArrayList<>();
@@ -50,16 +51,18 @@ public class PostController {
                 .gmtCreate(post.getGmtCreate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .gmtUpdate(post.getGmtUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .replyNum(replyService.list(new QueryWrapper<Reply>().lambda().eq(Reply::getPostId, post.getId())).size())
-                .userName(userService.getById(post.getUserId()).getUsername())
+                .userInfo(userService.getUserInfo(post.getUserId(),request))
                 .title(post.getTitle())
                 .build()));
         return Rest.ok().data(postList).total(page.getTotal());
     }
 
     @PostMapping
-    public Rest add(@RequestParam Map map) {
+    public Rest add(@RequestParam Map map,HttpServletRequest request) {
         ParamUtils param = new ParamUtils(map);
-        postService.save((Post) param.toObj(Post.class));
+        Post post =(Post) param.toObj(Post.class);
+        post.setUserId(TokenUtils.getUserInfo(request));
+        postService.save(post);
         return Rest.ok();
     }
 

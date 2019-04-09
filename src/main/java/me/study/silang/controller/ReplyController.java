@@ -6,9 +6,11 @@ import me.study.silang.bean.ParamUtils;
 import me.study.silang.bean.Rest;
 import me.study.silang.entity.Reply;
 import me.study.silang.service.IReplyService;
+import me.study.silang.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -33,8 +35,10 @@ public class ReplyController {
     }
 
     @PostMapping
-    public Rest add(@RequestParam Map map){
+    public Rest add(@RequestParam Map map, HttpServletRequest request){
         ParamUtils param = new ParamUtils(map);
+        Reply reply =(Reply)param.toObj(Reply.class);
+        reply.setUserId(TokenUtils.getUserInfo(request));
         replyService.save((Reply)param.toObj(Reply.class));
         return Rest.ok();
     }

@@ -9,6 +9,7 @@ import me.study.silang.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -44,6 +45,16 @@ public class UserController {
         ParamUtils param = new ParamUtils(map);
         userService.saveOrUpdate(param.toObj(User.class));
         return Rest.ok();
+    }
+
+    @GetMapping("/by-id")
+    public Rest getById(Integer id, HttpServletRequest request){
+        return Rest.ok().data(userService.getUserInfo(id, request));
+    }
+
+    @GetMapping("/by-token")
+    public Rest getById(String token, HttpServletRequest request){
+        return Rest.ok().data(userService.getUserInfo(token, request));
     }
 
     @DeleteMapping
