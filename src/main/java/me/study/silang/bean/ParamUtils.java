@@ -75,7 +75,7 @@ public class ParamUtils  {
         for (String key : map.keySet()) {
             if (null != map.get(key)) {
                 Object value = map.get(key);
-                queryWrapper.eq(key, value);
+                queryWrapper.eq(camelToUnderline(key), value);
             }
         }
         return queryWrapper;

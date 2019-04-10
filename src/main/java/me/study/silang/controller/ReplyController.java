@@ -39,7 +39,7 @@ public class ReplyController {
         ParamUtils param = new ParamUtils(map);
         Reply reply =(Reply)param.toObj(Reply.class);
         reply.setUserId(TokenUtils.getUserInfo(request));
-        replyService.save((Reply)param.toObj(Reply.class));
+        replyService.save(reply);
         return Rest.ok();
     }
 
