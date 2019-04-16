@@ -54,7 +54,7 @@ public class PostController {
                 .userInfo(userService.getUserInfo(post.getUserId(),request))
                 .title(post.getTitle())
                 .build()));
-        return Rest.ok().data(postList).total(page.getTotal());
+        return Rest.ok().data(modelList).total(page.getTotal());
     }
 
     @PostMapping

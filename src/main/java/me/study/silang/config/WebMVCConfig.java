@@ -23,15 +23,15 @@ public class WebMVCConfig extends WebMvcConfigurerAdapter {
         resourceHandlerRegistry.addResourceHandler("**/**.jpg").addResourceLocations("file:" + projectPath + "jpg\\");
 
     }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticationInterceptor())
-                .addPathPatterns("/**").excludePathPatterns("**/**.mp4").excludePathPatterns("**/**.jpg").excludePathPatterns("api/user/add").excludePathPatterns("api/login");
-    }
-
-    @Bean
-    public JWTFilter authenticationInterceptor() {
-        return new JWTFilter();
-    }
+//
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(authenticationInterceptor())
+//                .addPathPatterns("/**").excludePathPatterns("**/**.mp4").excludePathPatterns("**/**.jpg").excludePathPatterns("api/user/add").excludePathPatterns("api/login");
+//    }
+//
+//    @Bean
+//    public JWTFilter authenticationInterceptor() {
+//        return new JWTFilter();
+//    }
 }

@@ -20,7 +20,12 @@ public class MainController {
     @PostMapping("/login")
     public Rest login(String username,String password){
         User user =userService.getOne(new QueryWrapper<User>().lambda().eq(User::getPassword,password).eq(User::getUsername,username));
-        if(user==null)return Rest.fail("virtail fail");
+        if(user==null)return Rest.fail("认证失败");
         return Rest.ok().data(TokenUtils.makeToken(user));
+    }
+
+    @PostMapping("/logout")
+    public Rest login(){
+        return Rest.ok();
     }
 }

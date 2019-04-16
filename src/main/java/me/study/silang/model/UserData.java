@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Builder
 public class UserData {
 
-        private String videoNum;
+    private String videoNum;
 
     private String postNum;
 

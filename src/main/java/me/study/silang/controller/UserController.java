@@ -71,6 +71,10 @@ public class UserController {
         return Rest.ok();
     }
 
+    @GetMapping("get/token")
+    public Rest token(String token,HttpServletRequest request){
+        return Rest.ok().data(userService.getUserInfo(token,request));
+    }
     @GetMapping("/by-id")
     public Rest getById(Integer id, HttpServletRequest request) {
         if (id == null) id = TokenUtils.getUserInfo(request);
@@ -93,6 +97,8 @@ public class UserController {
     public Rest getById(String token, HttpServletRequest request) {
         return Rest.ok().data(userService.getUserInfo(token, request));
     }
+
+
 
     @DeleteMapping
     public Rest del(Integer id) {
