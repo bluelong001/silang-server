@@ -11,10 +11,8 @@ import me.study.silang.entity.Reply;
 import me.study.silang.entity.User;
 import me.study.silang.entity.Video;
 import me.study.silang.model.UserData;
-import me.study.silang.service.IPostService;
-import me.study.silang.service.IReplyService;
-import me.study.silang.service.IUserService;
-import me.study.silang.service.IVideoService;
+import me.study.silang.model.UserInfo;
+import me.study.silang.service.*;
 import me.study.silang.utils.TokenUtils;
 import org.apache.ibatis.annotations.Update;
 import org.apache.tomcat.util.buf.UDecoder;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +37,8 @@ import java.util.Map;
 public class UserController {
     @Resource
     private IUserService userService;
-
+    @Resource
+    private FileController fileController;
     @Resource
     private IPostService postService;
     @Resource
@@ -46,19 +47,44 @@ public class UserController {
     private IVideoService videoService;
 
     @GetMapping
-    public Rest list(@RequestParam Map map) {
+    public Rest list(@RequestParam Map map, HttpServletRequest request) {
         ParamUtils param = new ParamUtils(map);
         IPage page = userService.page(param.toPage(), param.toQueryWrapper());
-        return Rest.ok().data(page.getRecords()).total(page.getTotal());
+        List<UserInfo> list = new ArrayList<>();
+        List<User> users = page.getRecords();
+        users.forEach(user -> {
+            try {
+                list.add(UserInfo.builder()
+                        .id(user.getId())
+                        .role(user.getRole())
+                        .headIcon((String) fileController.get(user.getFileId(), request).getData())
+                        .displayname(user.getDisplayname())
+                        .username(user.getUsername())
+                        .build());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return Rest.ok().data(list).total(page.getTotal());
     }
 
     @PostMapping
     public Rest add(@RequestParam Map map) {
         ParamUtils param = new ParamUtils(map);
         User user = param.toObj(User.class);
-        user.setRole(1);
-        user.setFileId(1);
+        if (null == user.getRole() || user.getRole() == 0)
+            user.setRole(1);
+        if (null == user.getFileId() || user.getFileId() == 0)
+            user.setFileId(1);
         userService.save(user);
+        return Rest.ok();
+    }
+
+    @PutMapping
+    public Rest update(@RequestParam Map map) {
+        ParamUtils param = new ParamUtils(map);
+        User user = param.toObj(User.class);
+        userService.saveOrUpdate(user);
         return Rest.ok();
     }
 
@@ -72,9 +98,10 @@ public class UserController {
     }
 
     @GetMapping("get/token")
-    public Rest token(String token,HttpServletRequest request){
-        return Rest.ok().data(userService.getUserInfo(token,request));
+    public Rest token(String token, HttpServletRequest request) {
+        return Rest.ok().data(userService.getUserInfo(token, request));
     }
+
     @GetMapping("/by-id")
     public Rest getById(Integer id, HttpServletRequest request) {
         if (id == null) id = TokenUtils.getUserInfo(request);
@@ -85,9 +112,9 @@ public class UserController {
     public Rest getData(Integer id, HttpServletRequest request) {
         if (id == null) id = TokenUtils.getUserInfo(request);
         UserData userData = UserData.builder()
-                .postNum(String.valueOf(postService.count(new QueryWrapper<Post>().lambda().eq(Post::getUserId,id))))
-                .videoNum(String.valueOf(videoService.count(new QueryWrapper<Video>().lambda().eq(Video::getUserId,id))))
-                .replyNum(String.valueOf(replyService.count(new QueryWrapper<Reply>().lambda().eq(Reply::getUserId,id))))
+                .postNum(String.valueOf(postService.count(new QueryWrapper<Post>().lambda().eq(Post::getUserId, id))))
+                .videoNum(String.valueOf(videoService.count(new QueryWrapper<Video>().lambda().eq(Video::getUserId, id))))
+                .replyNum(String.valueOf(replyService.count(new QueryWrapper<Reply>().lambda().eq(Reply::getUserId, id))))
                 .readNum("0")
                 .build();
         return Rest.ok().data(userData);
@@ -97,7 +124,6 @@ public class UserController {
     public Rest getById(String token, HttpServletRequest request) {
         return Rest.ok().data(userService.getUserInfo(token, request));
     }
-
 
 
     @DeleteMapping

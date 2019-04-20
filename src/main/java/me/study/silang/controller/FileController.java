@@ -84,4 +84,15 @@ public class FileController {
 
 
     }
+
+    @GetMapping
+    public Rest get(Integer fileId, HttpServletRequest request) throws Exception {
+
+        me.study.silang.entity.File fileBean = fileService.getById(fileId);
+        String url = (request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath()+ fileService.getById(fileId).getFileName());
+        return Rest.ok().data(url);
+
+
+
+    }
 }

@@ -14,7 +14,7 @@ public class UserInfo {
     private Integer id;
 
     private String displayname;
-
+    private String username;
     private String headIcon;
 
     private Integer role;

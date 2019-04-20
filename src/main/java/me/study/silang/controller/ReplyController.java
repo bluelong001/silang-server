@@ -5,12 +5,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.study.silang.bean.ParamUtils;
 import me.study.silang.bean.Rest;
 import me.study.silang.entity.Reply;
+import me.study.silang.model.ReplyModel;
 import me.study.silang.service.IReplyService;
+import me.study.silang.service.IUserService;
 import me.study.silang.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,12 +31,23 @@ import java.util.Map;
 public class ReplyController {
     @Resource
     private IReplyService replyService;
-
+    @Resource
+    private IUserService userService;
     @GetMapping
-    public Rest list(@RequestParam Map map){
+    public Rest list(@RequestParam Map map,HttpServletRequest request){
         ParamUtils param = new ParamUtils(map);
         IPage page = replyService.page(param.toPage(), param.toQueryWrapper());
-        return Rest.ok().data(page.getRecords()).total(page.getTotal());
+        List<Reply> replies = page.getRecords();
+        List<ReplyModel> replyModels=new ArrayList<>();
+        replies.forEach(reply -> {
+            replyModels.add(ReplyModel.builder()
+                    .id(reply.getId())
+                    .context(reply.getContext())
+                    .gmtCreate(reply.getGmtCreate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .gmtUpdate(reply.getGmtUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .userInfo(userService.getUserInfo(reply.getUserId(),request)).build());
+        });
+        return Rest.ok().data(replyModels).total(page.getTotal());
     }
 
     @PostMapping

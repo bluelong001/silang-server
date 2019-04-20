@@ -47,6 +47,7 @@ public class PostController {
         List<Post> postList = page.getRecords();
 
         postList.forEach(post -> modelList.add(PostModel.builder()
+                .id(post.getId())
                 .content(post.getContent())
                 .gmtCreate(post.getGmtCreate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .gmtUpdate(post.getGmtUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
