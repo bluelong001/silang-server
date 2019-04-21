@@ -19,4 +19,6 @@ public class UserData {
 
     private String replyNum;
 
+    private String userNum;
+
 }
