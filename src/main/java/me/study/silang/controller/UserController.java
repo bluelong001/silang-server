@@ -88,6 +88,16 @@ public class UserController {
         return Rest.ok();
     }
 
+    @PutMapping("set-pass")
+    public Rest setPass(Integer userId,String oldPass,String newPass) {
+        User user = userService.getById(userId);
+        if(oldPass.equals(newPass))
+        user.setPassword(newPass);
+        else return Rest.fail("密码不一致");
+        userService.saveOrUpdate(user);
+        return Rest.ok();
+    }
+
     @PutMapping("swap-head")
     public Rest swapHead(@RequestParam Map map, HttpServletRequest request) {
 //        ParamUtils param = new ParamUtils(map);
