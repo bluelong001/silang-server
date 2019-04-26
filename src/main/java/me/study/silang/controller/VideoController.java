@@ -9,6 +9,7 @@ import me.study.silang.model.VideoModel;
 import me.study.silang.service.IFileService;
 import me.study.silang.service.IUserService;
 import me.study.silang.service.IVideoService;
+import me.study.silang.service.SocketIOService;
 import me.study.silang.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,8 @@ public class VideoController {
     private IFileService fileService;
     @Resource
     private IUserService userService;
+    @Resource
+    private SocketIOService socketIOService;
     @GetMapping
     public Rest list(@RequestParam Map map, HttpServletRequest request) {
         ParamUtils param = new ParamUtils(map);
@@ -61,6 +64,7 @@ public class VideoController {
         Video video = (Video) new ParamUtils(map).toObj(Video.class);
         video.setUserId(TokenUtils.getUserInfo(request));
         videoService.save(video);
+        socketIOService.pushMessageToAllUser(video);
         return Rest.ok();
     }
 

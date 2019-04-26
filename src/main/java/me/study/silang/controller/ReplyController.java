@@ -8,6 +8,7 @@ import me.study.silang.entity.Reply;
 import me.study.silang.model.ReplyModel;
 import me.study.silang.service.IReplyService;
 import me.study.silang.service.IUserService;
+import me.study.silang.service.SocketIOService;
 import me.study.silang.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,8 @@ public class ReplyController {
     private IReplyService replyService;
     @Resource
     private IUserService userService;
+    @Resource
+    private SocketIOService socketIOService;
     @GetMapping
     public Rest list(@RequestParam Map map,HttpServletRequest request){
         ParamUtils param = new ParamUtils(map);
@@ -56,6 +60,12 @@ public class ReplyController {
         Reply reply =(Reply)param.toObj(Reply.class);
         reply.setUserId(TokenUtils.getUserInfo(request));
         replyService.save(reply);
+
+        //找到主题的发表人id
+        Map<String,Object> replyMsg=new HashMap<>();
+        replyMsg.put("toPostId",reply.getPostId());
+        replyMsg.put("fromUserId",reply.getUserId());
+        socketIOService.pushMessageToUser(replyMsg);
         return Rest.ok();
     }
 

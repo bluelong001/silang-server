@@ -10,6 +10,7 @@ import me.study.silang.model.PostModel;
 import me.study.silang.service.IPostService;
 import me.study.silang.service.IReplyService;
 import me.study.silang.service.IUserService;
+import me.study.silang.service.SocketIOService;
 import me.study.silang.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,8 @@ public class PostController {
     private IReplyService replyService;
     @Resource
     private IUserService userService;
+    @Resource
+    private SocketIOService socketIOService;
 
     @GetMapping
     public Rest list(@RequestParam Map map, HttpServletRequest request) {
@@ -64,6 +67,7 @@ public class PostController {
         Post post =(Post) param.toObj(Post.class);
         post.setUserId(TokenUtils.getUserInfo(request));
         postService.save(post);
+        socketIOService.pushMessageToAllUser(post);
         return Rest.ok();
     }
 
