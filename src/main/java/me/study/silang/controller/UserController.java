@@ -93,7 +93,7 @@ public class UserController {
         User user = userService.getById(userId);
         if (oldPass.equals(user.getPassword()))
             user.setPassword(newPass);
-        else return Rest.fail("密码不一致");
+        else return Rest.fail("旧密码错误");
         userService.saveOrUpdate(user);
         return Rest.ok();
     }
