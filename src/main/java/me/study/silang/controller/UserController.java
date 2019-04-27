@@ -89,10 +89,10 @@ public class UserController {
     }
 
     @PutMapping("set-pass")
-    public Rest setPass(Integer userId,String oldPass,String newPass) {
+    public Rest setPass(Integer userId, String oldPass, String newPass) {
         User user = userService.getById(userId);
-        if(oldPass.equals(newPass))
-        user.setPassword(newPass);
+        if (oldPass.equals(user.getPassword()))
+            user.setPassword(newPass);
         else return Rest.fail("密码不一致");
         userService.saveOrUpdate(user);
         return Rest.ok();
