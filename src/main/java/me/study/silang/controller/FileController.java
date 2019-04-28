@@ -42,23 +42,10 @@ public class FileController {
     @PostMapping("/upload")
     public Rest upload(@RequestParam Map<String,String> param, @RequestParam(value = "file") List<MultipartFile> files) {
         String type = null != param.get("type") ? param.get("type") : "cache";
-        String savePath = projectPath + File.separator + type;
         List<String> ids=new ArrayList<>();
         for (MultipartFile f : files) {
-            String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"."+type;
-            File file = new File(savePath, fileName);
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            try {
-                Files.copy(f.getInputStream(), file.toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return Rest.fail();
-            }
-            me.study.silang.entity.File fileBean = me.study.silang.entity.File.builder().fileName(fileName).type(type).build();
-            fileService.save(fileBean);
-            ids.add(fileBean.getId().toString());
+            me.study.silang.entity.File bean = fileService.saveFile(f,type);
+            ids.add(bean.getId().toString());
         }
         return Rest.ok().data(String.join(";",ids));
     }

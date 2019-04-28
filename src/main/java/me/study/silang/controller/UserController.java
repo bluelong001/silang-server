@@ -2,24 +2,20 @@ package me.study.silang.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.study.silang.bean.ParamUtils;
 import me.study.silang.bean.Rest;
-import me.study.silang.entity.Post;
-import me.study.silang.entity.Reply;
-import me.study.silang.entity.User;
-import me.study.silang.entity.Video;
+import me.study.silang.entity.*;
 import me.study.silang.model.UserData;
 import me.study.silang.model.UserInfo;
 import me.study.silang.service.*;
 import me.study.silang.utils.TokenUtils;
-import org.apache.ibatis.annotations.Update;
-import org.apache.tomcat.util.buf.UDecoder;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +41,9 @@ public class UserController {
     private IReplyService replyService;
     @Resource
     private IVideoService videoService;
+
+    @Resource
+    private IFileService fileService;
 
     @GetMapping
     public Rest list(@RequestParam Map map, HttpServletRequest request) {
@@ -72,11 +71,20 @@ public class UserController {
     public Rest add(@RequestParam Map map) {
         ParamUtils param = new ParamUtils(map);
         User user = param.toObj(User.class);
-        if (null == user.getRole() || user.getRole() == 0)
-            user.setRole(1);
-        if (null == user.getFileId() || user.getFileId() == 0)
-            user.setFileId(1);
-        userService.save(user);
+        org.springframework.core.io.Resource resource = new ClassPathResource("default/default.jpg");
+        try {
+            java.io.File sourceFile =  resource.getFile();
+            File file = fileService.saveFile(sourceFile,"jpg");
+            if (null == user.getRole() || user.getRole() == 0)
+                user.setRole(1);
+            if (null == user.getFileId() || user.getFileId() == 0)
+                user.setFileId(file.getId());
+            userService.save(user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         return Rest.ok();
     }
 

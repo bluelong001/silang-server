@@ -7,6 +7,7 @@ server:
     max-http-post-size: 0
   address: 192.168.199.225
   port: 8080
+#  address: 93.179.97.17
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
