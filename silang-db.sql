@@ -51,7 +51,7 @@ CREATE TABLE `message` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE `message` (
 
 LOCK TABLES `message` WRITE;
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
-INSERT INTO `message` VALUES (1,'admin刚才发表了一个主题：测试哦哦哦'),(2,'admin刚才发表了一个主题：第二次测试'),(3,'admin刚才发表了一个主题：我来告诉你是谁');
+INSERT INTO `message` VALUES (7,'admin刚才发表了一个主题：等等'),(8,'admin刚才发表了一个主题：顶顶顶'),(9,'admin刚才发表了一个主题：打'),(10,'admin刚才发表了一个主题：呃呃');
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,7 +81,7 @@ CREATE TABLE `post` (
   PRIMARY KEY (`id`,`user_id`),
   KEY `fk_post_user1_idx` (`user_id`),
   CONSTRAINT `fk_post_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,7 +90,7 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
-INSERT INTO `post` VALUES (48,'我是一个主题','','2019-04-28 11:51:18','2019-04-28 11:51:18',7),(49,'测试哦','<p>真的只是测试</p>','2019-05-01 09:08:09','2019-05-01 09:08:09',7),(50,'测试哦哦哦','<p>测试</p>','2019-05-01 09:11:24','2019-05-01 09:11:24',7),(51,'第二次测试','<p>第二次测试</p>','2019-05-01 09:12:29','2019-05-01 09:12:29',7),(52,'我来告诉你是谁','<p>我来告诉你是谁</p>','2019-05-01 09:24:22','2019-05-01 09:24:22',7);
+INSERT INTO `post` VALUES (48,'我是一个主题','','2019-04-28 11:51:18','2019-04-28 11:51:18',7),(49,'测试哦','<p>真的只是测试</p>','2019-05-01 09:08:09','2019-05-01 09:08:09',7),(50,'测试哦哦哦','<p>测试</p>','2019-05-01 09:11:24','2019-05-01 09:11:24',7),(51,'第二次测试','<p>第二次测试</p>','2019-05-01 09:12:29','2019-05-01 09:12:29',7),(52,'我来告诉你是谁','<p>我来告诉你是谁</p>','2019-05-01 09:24:22','2019-05-01 09:24:22',7),(53,'test','<p>test</p>','2019-05-01 09:36:11','2019-05-01 09:36:11',7),(54,'啊啊啊','<p>啊啊啊</p>','2019-05-01 09:36:28','2019-05-01 09:36:28',7),(55,'呃呃呃','<p>呃呃呃</p>','2019-05-01 09:36:54','2019-05-01 09:36:54',7),(56,'等等','<p>等等</p>','2019-05-01 09:37:01','2019-05-01 09:37:01',7),(58,'打','<p>打</p>','2019-05-01 09:40:06','2019-05-01 09:40:06',7),(59,'呃呃','<p>呃呃呃</p>','2019-05-01 09:41:54','2019-05-01 09:41:54',7);
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -156,7 +156,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (7,'admin','123456','admin',2,'2019-04-28 11:33:28','2019-04-28 11:34:13',143,NULL),(8,'啊啊啊','啊啊啊','啊啊a',2,'2019-05-01 09:12:17','2019-05-01 09:12:17',188,'这个人很懒，什么都没留下来');
+INSERT INTO `user` VALUES (7,'admin','123456','admin',2,'2019-04-28 11:33:28','2019-04-28 11:34:13',143,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,9 +174,9 @@ CREATE TABLE `user_message` (
   PRIMARY KEY (`id`,`user_id`,`message_id`),
   KEY `fk_message_id_idx` (`message_id`),
   KEY `fk_user_id_idx` (`user_id`) /*!80000 INVISIBLE */,
-  CONSTRAINT `fk_message_id` FOREIGN KEY (`message_id`) REFERENCES `message` (`id`),
-  CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_message_id` FOREIGN KEY (`message_id`) REFERENCES `message` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +185,6 @@ CREATE TABLE `user_message` (
 
 LOCK TABLES `user_message` WRITE;
 /*!40000 ALTER TABLE `user_message` DISABLE KEYS */;
-INSERT INTO `user_message` VALUES (1,7,1),(3,8,2),(4,7,3),(5,8,3);
 /*!40000 ALTER TABLE `user_message` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -233,4 +232,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-05-01 17:32:43
+-- Dump completed on 2019-05-01 18:01:39
