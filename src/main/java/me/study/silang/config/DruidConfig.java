@@ -20,8 +20,8 @@ public class DruidConfig {
         servletRegistrationBean.addInitParameter("allow",
                 ""); // 白名单
 //        servletRegistrationBean.addInitParameter("deny", "192.168.28.200"); // 黑名单
-        servletRegistrationBean.addInitParameter("loginUsername", "root"); // 用户名
-        servletRegistrationBean.addInitParameter("loginPassword", "root"); // 密码
+//        servletRegistrationBean.addInitParameter("loginUsername", "root"); // 用户名
+//        servletRegistrationBean.addInitParameter("loginPassword", "root"); // 密码
         servletRegistrationBean.addInitParameter("resetEnable", "false"); // 是否可以重置数据源
         return servletRegistrationBean ;
     }
@@ -30,7 +30,7 @@ public class DruidConfig {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean() ;
         filterRegistrationBean.setFilter(new WebStatFilter());
         filterRegistrationBean.addUrlPatterns("/*"); // 所有请求进行监控处理
-        filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.css,/druid/*");
+        filterRegistrationBean.addInitParameter("exclusions", "*.mp4,*.js,*.gif,*.jpg,*.css,/druid/*");
         return filterRegistrationBean ;
     }
     @Bean

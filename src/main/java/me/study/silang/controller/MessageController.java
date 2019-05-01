@@ -53,10 +53,12 @@ public class MessageController {
     }
 
     @PostMapping
-    public Rest add(String msg, Boolean pushEnabled) {
-        if (pushEnabled)
-            socketIOService.pushMessageToAllUser(msg);
-        messageService.save(Message.builder().message(msg).build());
+    public Rest add(String message, Boolean pushEnabled) {
+        if (pushEnabled){
+
+            socketIOService.pushMessageToAllUser(message);
+        }else
+            messageService.save(Message.builder().message(message).build());
         return Rest.ok();
     }
 
