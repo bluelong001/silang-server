@@ -14,19 +14,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class SilangApplicationTests {
-
-    @Resource
-    PostController postController;
-
-    @Resource
-    IPostService postService;
-
-    @Test
-    public void del(){
-        System.out.println(postController.del(1));
-    }
-
-}
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
+//public class SilangApplicationTests {
+//
+////    @Resource
+////    PostController postController;
+////
+////    @Resource
+////    IPostService postService;
+////
+////    @Test
+////    public void del(){
+////        System.out.println(postController.del(1));
+////    }
+//
+//}

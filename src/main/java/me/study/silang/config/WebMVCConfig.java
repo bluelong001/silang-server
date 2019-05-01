@@ -8,6 +8,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import java.io.File;
+
 @Configuration
 public class WebMVCConfig extends WebMvcConfigurerAdapter {
 
@@ -19,8 +21,8 @@ public class WebMVCConfig extends WebMvcConfigurerAdapter {
 //        resourceHandlerRegistry.addResourceHandler("**/**/default.jpg").addResourceLocations("classpath:/static/");
 //        resourceHandlerRegistry.addResourceHandler("img/**/default.jpg").addResourceLocations("classpath:/static/");
 
-        resourceHandlerRegistry.addResourceHandler("**/**.mp4").addResourceLocations("file:" + projectPath + "mp4\\");
-        resourceHandlerRegistry.addResourceHandler("**/**.jpg").addResourceLocations("file:" + projectPath + "jpg\\");
+        resourceHandlerRegistry.addResourceHandler("**/**.mp4").addResourceLocations("file:" + projectPath +File.separator+ "mp4"+ File.separator);
+        resourceHandlerRegistry.addResourceHandler("**/**.jpg").addResourceLocations("file:" + projectPath +File.separator+ "jpg"+File.separator);
 
     }
 //

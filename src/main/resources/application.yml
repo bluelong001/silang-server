@@ -1,12 +1,15 @@
 
 
-project-path: D:\\silang\\
+#project-path: D:\\silang\\
+project-path: /home/silang/
 
 server:
   tomcat:
     max-http-post-size: 0
-  address: 192.168.199.225
+  address: 93.179.97.17
   port: 8080
+#  address: 192.168.199.225
+#  port: 8080
 #  address: 93.179.97.17
 
 mybatis-plus:
@@ -42,9 +45,9 @@ mybatis-plus:
 spring:
   datasource:
     name: demo
-    url: jdbc:mysql://127.0.0.1:3306/silang-db?useSSL=false&characterEncoding=UTF-8&serverTimezone=GMT%2b8
+    url: jdbc:mysql://127.0.0.1:3306/silang?useSSL=false&characterEncoding=UTF-8&serverTimezone=GMT%2b8
     username: root
-    password: root
+    password: root1234
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
