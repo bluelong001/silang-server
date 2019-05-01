@@ -67,7 +67,8 @@ public class PostController {
         Post post =(Post) param.toObj(Post.class);
         post.setUserId(TokenUtils.getUserInfo(request));
         postService.save(post);
-        socketIOService.pushMessageToAllUser(post);
+        String msg = userService.getById(post.getUserId()).getDisplayname() + "刚才发表了一个主题：" + post.getTitle();
+        socketIOService.pushMessageToAllUser(msg);
         return Rest.ok();
     }
 

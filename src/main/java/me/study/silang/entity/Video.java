@@ -43,4 +43,6 @@ public class Video implements Serializable {
 
     private Integer fileId;
 
+    private String imgList;
+
 }

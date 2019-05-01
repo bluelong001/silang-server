@@ -17,5 +17,6 @@ public class UserInfo {
     private String username;
     private String headIcon;
 
+    private String signature;
     private Integer role;
 }

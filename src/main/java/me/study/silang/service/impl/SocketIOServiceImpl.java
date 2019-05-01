@@ -2,12 +2,8 @@ package me.study.silang.service.impl;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import me.study.silang.entity.Post;
-import me.study.silang.entity.Video;
-import me.study.silang.service.IPostService;
-import me.study.silang.service.IReplyService;
-import me.study.silang.service.IUserService;
-import me.study.silang.service.SocketIOService;
+import me.study.silang.entity.*;
+import me.study.silang.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +29,10 @@ public class SocketIOServiceImpl implements SocketIOService {
     private IUserService userService;
     @Resource
     private IReplyService replyService;
-
+    @Resource
+    private IUserMessageService userMessageService;
+    @Resource
+    private IMessageService messageService;
 
     /**
      * Spring IoC容器创建之后，在加载SocketIOServiceImpl Bean之后启动
@@ -95,23 +94,31 @@ public class SocketIOServiceImpl implements SocketIOService {
         }
     }
 
-    @Override
-    public void pushMessageToAllUser(Video video) {
-        String msg=userService.getById(video.getUserId()).getDisplayname()+"刚才发表了一个视频："+video.getTitle();
-        for (String key : clientMap.keySet()) {
-            SocketIOClient client = clientMap.get(key);
-            if (client != null)
-                client.sendEvent("systemCall", msg);
+
+    private Integer saveMessage(String msg, boolean _toAll, Integer... userId) {
+        Message message = Message.builder()
+                .message(msg)
+                .build();
+        messageService.save(message);
+        if (_toAll) {
+            List<User> list = userService.list();
+            list.forEach(item ->
+                    userMessageService.save(UserMessage.builder().userId(item.getId()).messageId(message.getId()).build()));
+        } else {
+            for (Integer integer : userId) {
+                userMessageService.save(UserMessage.builder().userId(integer).messageId(message.getId()).build());
+            }
         }
+        return message.getId();
     }
 
     @Override
-    public void pushMessageToAllUser(Post post) {
-        String msg=userService.getById(post.getUserId()).getDisplayname()+"刚才发表了一个主题："+post.getTitle();
+    public void pushMessageToAllUser(String msg) {
+        Integer id  =saveMessage(msg, true);
         for (String key : clientMap.keySet()) {
             SocketIOClient client = clientMap.get(key);
             if (client != null)
-                client.sendEvent("systemCall", msg);
+                client.sendEvent("systemCall",id );
         }
     }
 
@@ -119,11 +126,12 @@ public class SocketIOServiceImpl implements SocketIOService {
     public void pushMessageToUser(Map<String, Object> map) {
         Integer postId = (Integer) map.get("toPostId");
         Post post = postService.getById(postId);
-        Integer toUser=post.getUserId();
+        Integer toUser = post.getUserId();
+        String msg = userService.getById(toUser).getDisplayname() + "回复了你发表的主题：" + post.getTitle();
+        Integer id  =saveMessage(msg, false, toUser);
         SocketIOClient client = clientMap.get(toUser.toString());
-        String msg=userService.getById(toUser).getDisplayname()+"回复了你发表的主题："+post.getTitle();
         if (client != null)
-            client.sendEvent("replyCall", msg);
+            client.sendEvent("replyCall", id);
 
     }
 

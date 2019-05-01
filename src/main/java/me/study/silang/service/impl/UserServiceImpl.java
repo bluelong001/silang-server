@@ -33,6 +33,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .displayname(user.getDisplayname())
                 .headIcon(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath() + fileService.getById(user.getFileId()).getFileName())
                 .role(user.getRole())
+                .signature(user.getSignature())
                 .build();
     }
 

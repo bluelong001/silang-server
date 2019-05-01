@@ -22,9 +22,6 @@ public interface SocketIOService {   //推送的事件
     //
 
     //
-    void pushMessageToAllUser(Post post);
-
-    void pushMessageToAllUser(Video post);
-
+    void pushMessageToAllUser(String msg);
     void pushMessageToUser(Map<String, Object> map);
 }

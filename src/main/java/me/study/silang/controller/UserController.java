@@ -59,6 +59,7 @@ public class UserController {
                         .headIcon((String) fileController.get(user.getFileId(), request).getData())
                         .displayname(user.getDisplayname())
                         .username(user.getUsername())
+                        .signature(user.getSignature())
                         .build());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -111,6 +112,15 @@ public class UserController {
 //        ParamUtils param = new ParamUtils(map);
         User user = userService.getById(TokenUtils.getUserInfo(request));
         user.setFileId(Integer.valueOf((String) map.get("fileId")));
+        userService.saveOrUpdate(user);
+        return Rest.ok();
+    }
+
+    @PutMapping("swap-signature")
+    public Rest swapSignature(@RequestParam Map map, HttpServletRequest request) {
+//        ParamUtils param = new ParamUtils(map);
+        User user = userService.getById(TokenUtils.getUserInfo(request));
+        user.setSignature((String) map.get("signature"));
         userService.saveOrUpdate(user);
         return Rest.ok();
     }

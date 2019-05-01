@@ -51,6 +51,7 @@ public class VideoController {
                     .title(video.getTitle())
                     .fileUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath() + fileService.getById(video.getFileId()).getFileName())
                     .userInfo(userService.getUserInfo(video.getUserId(),request))
+                    .imgList(video.getImgList())
                     .gmtCreate(video.getGmtCreate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                     .gmtUpdate(video.getGmtUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                     .id(video.getId())
@@ -64,7 +65,8 @@ public class VideoController {
         Video video = (Video) new ParamUtils(map).toObj(Video.class);
         video.setUserId(TokenUtils.getUserInfo(request));
         videoService.save(video);
-        socketIOService.pushMessageToAllUser(video);
+        String msg = userService.getById(video.getUserId()).getDisplayname() + "刚才发表了一个视频：" + video.getTitle();
+        socketIOService.pushMessageToAllUser(msg);
         return Rest.ok();
     }
 
