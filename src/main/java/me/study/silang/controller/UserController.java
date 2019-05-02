@@ -72,14 +72,16 @@ public class UserController {
     public Rest add(@RequestParam Map map) {
         ParamUtils param = new ParamUtils(map);
         User user = param.toObj(User.class);
-        org.springframework.core.io.Resource resource = new ClassPathResource("default/default.jpg");
+
         try {
-            java.io.File sourceFile =  resource.getFile();
-            File file = fileService.saveFile(sourceFile,"jpg");
+
             if (null == user.getRole() || user.getRole() == 0)
                 user.setRole(1);
-            if (null == user.getFileId() || user.getFileId() == 0)
+            if (null == user.getFileId() || user.getFileId() == 0){
+                org.springframework.core.io.Resource resource = new ClassPathResource("default" + java.io.File.separator + "default.jpg");
+                File file = fileService.saveFile(resource.getInputStream(), "jpg");
                 user.setFileId(file.getId());
+            }
             userService.save(user);
         } catch (IOException e) {
             e.printStackTrace();

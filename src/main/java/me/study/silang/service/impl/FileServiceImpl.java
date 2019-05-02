@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.UUID;
 
@@ -26,27 +28,47 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
     @Value("${project-path}")
     public String projectPath;
     @Override
-    public File saveFile(MultipartFile f,String type) {
-        String savePath = projectPath + java.io.File.separator + type;
-        String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"."+type;
-        java.io.File file = new java.io.File(savePath, fileName);
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        if(file.exists())file.delete();
+    public File saveFile(MultipartFile f, String type) {
+        java.io.File file = newFile(type);
         try {
             Files.copy(f.getInputStream(), file.toPath());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-        me.study.silang.entity.File fileBean = me.study.silang.entity.File.builder().fileName(fileName).type(type).build();
+        return getFile(type, file);
+    }
+
+    private File getFile(String type, java.io.File file) {
+        File fileBean = File.builder().fileName(file.getName()).type(type).build();
         save(fileBean);
         return fileBean;
     }
 
     @Override
     public File saveFile(java.io.File f, String type) {
+        java.io.File file = newFile(type);
+        try {
+            Files.copy(f.toPath(), file.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return getFile(type, file);
+    }
+
+    @Override
+    public File saveFile(InputStream f, String type) {
+        java.io.File file = newFile(type);
+        try {
+            Files.copy(f, file.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return getFile(type,file);
+    }
+    private java.io.File newFile(String type){
         String savePath = projectPath + java.io.File.separator + type;
         String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"."+type;
         java.io.File file = new java.io.File(savePath, fileName);
@@ -54,14 +76,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
             file.getParentFile().mkdirs();
         }
         if(file.exists())file.delete();
-        try {
-            Files.copy(f.toPath(), file.toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        me.study.silang.entity.File fileBean = me.study.silang.entity.File.builder().fileName(fileName).type(type).build();
-        save(fileBean);
-        return fileBean;
+        return file;
     }
 }
