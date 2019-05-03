@@ -39,6 +39,7 @@ public class VideoController {
     private IUserService userService;
     @Resource
     private SocketIOService socketIOService;
+
     @GetMapping
     public Rest list(@RequestParam Map map, HttpServletRequest request) {
         ParamUtils param = new ParamUtils(map);
@@ -50,10 +51,11 @@ public class VideoController {
                     .content(video.getContent())
                     .title(video.getTitle())
                     .fileUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath() + fileService.getById(video.getFileId()).getFileName())
-                    .userInfo(userService.getUserInfo(video.getUserId(),request))
+                    .userInfo(userService.getUserInfo(video.getUserId(), request))
                     .imgList(video.getImgList())
                     .gmtCreate(video.getGmtCreate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                     .gmtUpdate(video.getGmtUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .videoHead(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath() + fileService.getById(video.getFileId()).getFileName().replace(".mp4", ".jpg"))
                     .id(video.getId())
                     .build());
         });

@@ -5,6 +5,7 @@ import me.study.silang.entity.File;
 import me.study.silang.mapper.FileMapper;
 import me.study.silang.service.IFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import me.study.silang.utils.VideoUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +18,7 @@ import java.util.UUID;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author Me
@@ -27,6 +28,7 @@ import java.util.UUID;
 public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IFileService {
     @Value("${project-path}")
     public String projectPath;
+
     @Override
     public File saveFile(MultipartFile f, String type) {
         java.io.File file = newFile(type);
@@ -40,6 +42,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
     }
 
     private File getFile(String type, java.io.File file) {
+        if (type.equals("mp4")) {
+            try {
+                VideoUtils.getVideoHead(file.getPath(),file.getPath().replace(".mp4",".jpg"));
+            } catch (Exception e) {
+                e.printStackTrace();
+//            VideoUtils.getVideoHead2(file.getPath(), file.getPath().replace(".mp4", ".jpg"));
+
+            }
+        }
         File fileBean = File.builder().fileName(file.getName()).type(type).build();
         save(fileBean);
         return fileBean;
@@ -62,20 +73,24 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
         java.io.File file = newFile(type);
         try {
             Files.copy(f, file.toPath());
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return getFile(type,file);
+
+        return getFile(type, file);
     }
-    private java.io.File newFile(String type){
+
+    private java.io.File newFile(String type) {
         String savePath = projectPath + java.io.File.separator + type;
-        String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"."+type;
+        String fileName = UUID.randomUUID().toString().replaceAll("-", "") + "." + type;
         java.io.File file = new java.io.File(savePath, fileName);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
-        if(file.exists())file.delete();
+        if (file.exists()) file.delete();
+
         return file;
     }
 }

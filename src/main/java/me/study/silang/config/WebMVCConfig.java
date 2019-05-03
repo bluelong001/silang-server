@@ -21,8 +21,10 @@ public class WebMVCConfig extends WebMvcConfigurerAdapter {
 //        resourceHandlerRegistry.addResourceHandler("**/**/default.jpg").addResourceLocations("classpath:/static/");
 //        resourceHandlerRegistry.addResourceHandler("img/**/default.jpg").addResourceLocations("classpath:/static/");
 
-        resourceHandlerRegistry.addResourceHandler("**/**.mp4").addResourceLocations("file:" + projectPath +File.separator+ "mp4"+ File.separator);
-        resourceHandlerRegistry.addResourceHandler("**/**.jpg").addResourceLocations("file:" + projectPath +File.separator+ "jpg"+File.separator);
+        resourceHandlerRegistry.addResourceHandler("**/**.mp4").addResourceLocations("file:" + projectPath + File.separator + "mp4" + File.separator);
+
+        resourceHandlerRegistry.addResourceHandler("**/**.jpg").addResourceLocations("file:" + projectPath + File.separator + "jpg" + File.separator)
+                .addResourceLocations("file:" + projectPath + File.separator + "mp4" + File.separator);
 
     }
 //

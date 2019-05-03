@@ -36,6 +36,7 @@ public class VideoModel implements Serializable {
 
     private String imgList;
     private String fileUrl;
+    private String videoHead;
 
 
 }
